@@ -1,4 +1,5 @@
 import logging
+import os
 
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
@@ -31,7 +32,12 @@ async def help_command(
 
 def main() -> None:
     """Start the Telegram bot."""
-    application = ApplicationBuilder().token("YOUR_BOT_TOKEN").build()
+    bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+
+    if not bot_token:
+        raise RuntimeError("TELEGRAM_BOT_TOKEN is not set")
+
+    application = ApplicationBuilder().token(bot_token).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
